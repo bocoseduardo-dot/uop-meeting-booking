@@ -1,0 +1,1 @@
+adopted postures, students and teachers are unralated entities, there is no father relasion such as user, also in professor, we will use relation() between the slots and the teachers to be able to mantein a record of meetings.
