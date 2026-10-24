@@ -10,7 +10,7 @@ class Professor(Base):
     name: Mapped[str] = mapped_column(String(100))
     email: Mapped[str] = mapped_column(String(255), unique=True)
     slots: Mapped[list["Slot"]] = relationship(
-        back_populates="professors", cascade="all, delete-orphan"
+        back_populates="professor", cascade="all, delete-orphan"
     )
 
 
