@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -34,3 +35,8 @@ def create_slot(slot_in: SlotCreate, db: SettingsDep):
 @app.get("/slots", response_model=list[SlotRead])
 def list_slots(db: SettingsDep):
     return db.scalars(select(Slot)).all()
+
+
+@app.get("/", include_in_schema=False)
+def index():
+    return FileResponse("static/index.html")

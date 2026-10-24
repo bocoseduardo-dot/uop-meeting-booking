@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>UoP Meeting Booking</title>
+  </head>
+  <body>
+    <h1>UoP Meeting Booking</h1>
+
+    <h2>Publish a slot</h2>
+    <form id="slot-form">
+      <label
+        >Professor ID <input name="professor_id" type="number" required
+      /></label>
+      <label
+        >Starts at <input name="starts_at" type="datetime-local" required
+      /></label>
+      <label
+        >Ends at <input name="ends_at" type="datetime-local" required
+      /></label>
+      <label>Location <input name="location" maxlength="100" required /></label>
+      <button type="submit">Publish</button>
+    </form>
+    <p id="message"></p>
+
+    <h2>Available slots</h2>
+    <ul id="slot-list"></ul>
+    <script>
+      const form = document.getElementById("slot-form");
+      const message = document.getElementById("message");
+
+      async function loadSlots() {
+        const response = await fetch("/slots");
+        const slots = await response.json();
+        const list = document.getElementById("slot-list");
+        list.replaceChildren();
+        for (const slot of slots) {
+          const item = document.createElement("li");
+          item.textContent = `${slot.starts_at} → ${slot.ends_at} · ${slot.location} · ${slot.professor.name}`;
+          list.append(item);
+        }
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = new FormData(form);
+        const payload = {
+          professor_id: Number(data.get("professor_id")),
+          starts_at: data.get("starts_at"),
+          ends_at: data.get("ends_at"),
+          location: data.get("location"),
+        };
+        const response = await fetch("/slots", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (response.ok) {
+          message.textContent = "Slot published.";
+          form.reset();
+          await loadSlots();
+        } else {
+          const error = await response.json();
+          message.textContent = `Error ${response.status}: ${JSON.stringify(error.detail)}`;
+        }
+      });
+
+      loadSlots();
+    </script>
+  </body>
+</html>
