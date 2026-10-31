@@ -97,5 +97,5 @@ docs/      Project deliverables
 
 ## Documentation
 
-Project deliverables (D1, D2) are in `docs/`.
+Project deliverables (D1, D2,D3) are in `docs/`.
 
