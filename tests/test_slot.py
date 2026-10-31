@@ -8,17 +8,19 @@ from app.database import Base, get_db
 from app.main import app
 from app.models import Professor
 
-test_engine = create_engine(
+local_testing_engine = create_engine(
     "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
 )
-testing_sesionlocal = sessionmaker(bind=test_engine)
+testing_sesionlocal = sessionmaker(bind=local_testing_engine)
 
 
 @pytest.fixture
 def client():
-    Base.metadata.create_all(bind=test_engine)
+    Base.metadata.create_all(bind=local_testing_engine)
     with testing_sesionlocal() as db:
-        db.add(Professor(name="Test_Professor", email="Professor@Exalmple.com"))
+        db.add(
+            Professor(name="local_testing_Professor", email="professor@exalmple.com")
+        )
         db.commit()
 
     def override_get_db():
@@ -28,7 +30,7 @@ def client():
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
-    Base.metadata.drop_all(bind=test_engine)
+    Base.metadata.drop_all(bind=local_testing_engine)
 
 
 def test_created_Slot_apears_in_list(client):
@@ -41,5 +43,5 @@ def test_created_Slot_apears_in_list(client):
     response = client.post("/slots", json=payload)
 
     assert response.status_code == 201
-    assert response.json()["professor"]["name"] == "Test_Professor"
+    assert response.json()["professor"]["name"] == "local_testing_Professor"
     assert len(client.get("/slots").json()) == 1
