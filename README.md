@@ -99,3 +99,6 @@ docs/      Project deliverables
 
 Project deliverables (D1, D2,D3) are in `docs/`.
 
+## Architecture
+
+The architecture of the system (context, containers, components, data flows, interfaces and ADRs) is described in [docs/D4.md](docs/D4.md).
