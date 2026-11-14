@@ -70,6 +70,16 @@ Run all commands from the repository root, with the virtual environment activate
    - Web page: <http://127.0.0.1:8000/>
    - API documentation: <http://127.0.0.1:8000/docs>
 
+## Run with Docker
+
+```bash
+docker build -t uop-meeting-booking:0.1.0 .
+docker volume create uop-data
+docker run -d --name uop-api -p 8000:8000 -v uop-data:/app/data -e DATABASE_URL=sqlite:////app/data/meeting_booking.db --restart unless-stopped uop-meeting-booking:0.1.0
+```
+
+Then open <http://localhost:8000>. The data is stored in the `uop-data` volume, so it is kept when the container is replaced. To load an example professor: `docker exec uop-api python -m app.seed`.
+
 ## Tests
 
 ```bash
@@ -102,3 +112,4 @@ Project deliverables (D1, D2,D3) are in `docs/`.
 ## Architecture
 
 The architecture of the system (context, containers, components, data flows, interfaces and ADRs) is described in [docs/D4.md](docs/D4.md).
+The deployment design (runtime components, data storage, backups and the deployment process) is described in [docs/D5.md](docs/D5.md).
